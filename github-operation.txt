@@ -1,0 +1,15 @@
+ssh-keygen -t rsa -C "975476954@qq.com" 一路回车
+
+$ cd /c/Users/Admin/.ssh
+$ ls
+id_rsa  id_rsa.pub  known_hosts
+$ cat id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCp0P0ajNfz88SMeOlPzvw9U4t78Cr12T6HYXfWt6VlPJURt5NsnVT95ItFKx/+tdDgQaN5JJRL3w841ZZiOwyEewj3jU5dBLjgjc8tmrcOh/Mg2dPEFlQ+AYTvRgVaeinq65a0P7bwQgYz2NInVOa6E/kbir+gFrzRv2MJLcNhgj3gQ8ifRmu14VjWtF5l5NkTZ1lJ7EpKqCeA8l7orbp/Fz+csS9+oTGYBRnKFr3vQ97HAUglr03p724rg+evcwEpx5ayrg14jAquBF+DTMKmxJUoMExTIHyZs2q3Kl/+4ZBngeGrj+3q1kmpFQeYl9GIgjQ3yI7QII/geJ59bQyT 975476954@qq.com
+
+登陆你的GitHub账户，依次点击“Setting—>SSH and GPG keys—>New SSH key”，接着填写秘钥标题，并把id_rsa.pub中的内容拷贝到“key”中，最后保存即可。
+
+$ cd /f
+本地克隆远程git仓库 $ git clone git://github.com/lituxiu/workingnotes
+Cloning into 'workingnotes'...
+warning: You appear to have cloned an empty repository.
+

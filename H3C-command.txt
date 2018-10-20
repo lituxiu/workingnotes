@@ -1,0 +1,29 @@
+system-view 进入系统试图
+sysname routerA 配置设备名
+save 保存配置
+reboot 重启
+（dis cu或）display  current-configuration 查看当前设备配置信息
+display  saved-configuration 查看Flash中的配置（相当于CISCO start-config）
+reset?saved-configuration 删除FLASH?中的配置信息(重置设备配置)
+
+Trunk类型的端口可允许多个VLAN，access只允许一个VLAN
+配置VLAN接口1的主IP地址和从IP地址(在vlan1里划分两个网段，交换机默认)。
+system-view
+interface vlan-interface 1   （int vlan 1）
+ip address 172.16.1.1 255.255.255.0
+ip address 172.16.2.1 255.255.255.0 sub 配置子网端
+dis this 查看当前接口配置
+(undo ip add 192.168.1.1 24 删除vlan端口的ip)
+
+vlan 10 创建vlan10
+undo vlan 10 删除vlan10
+dis vlan 显示vlan信息
+port link-type trunk ?设置以太网端口的链路类型为TRUNK
+
+ip route 192.168.3.0 255.255.255.0 s 1/0 静态路由
+undo ip route 192.168.3.0 255.255.255.0 s 1/0 删除静态路由
+
+ip route 0.0.0.0 默认路由
+
+
+
