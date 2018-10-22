@@ -25,5 +25,11 @@ undo ip route 192.168.3.0 255.255.255.0 s 1/0 删除静态路由
 
 ip route 0.0.0.0 默认路由
 
-
+++++
+(普通以太网的数据帧的最大传输单元（Maximum Transmission Unit，MTU）为1500字节。虚拟机发送一个1500字节的数据包到虚拟交换机，经过vxlan封装时，会增加50字节的头部。这样超过1500字节的数据包，在从aSV主机发送到物理网络中时会被分片，会增加数据包的数量，同时会增大网络设备和aSV主机的数据处理压力。)
+(会将aSV主机网口的MTU设置为1600字节，这样vxlan封装的数据发到物理网络时，不会进行分片，能显著提升虚拟网络转发性能。此时必须在连接aSV的物理交换机上启用巨帧（Jumbo Frame）支持)
+启用巨帧支持的方法()
+system-view 
+interface GigabitEthernet 1/0/1 
+jumboframe enable
 
