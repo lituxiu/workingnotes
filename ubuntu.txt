@@ -1,0 +1,11 @@
+°²×°wgetÏÂÔØÃüÁî
+apt-get update
+apt-get install wget
+
+ÅäÖÃdhcp
+vi /etc/network/interfaces
+auto enp0s18
+iface enp0s18 inet dhcp
+
+·À»ğÇ½
+ufw status
