@@ -1,0 +1,120 @@
+quit命令用来使用户从当前视图退回到低一级别的视图。
+交换机视图分为三个级别，由低到高分别为：
+1.用户视图 <Sysname>，return命令用来从当前视图退回到用户视图，与return命令功能相同的是组合键<Ctrl+Z>。
+2.系统视图 [Sysname]，system-view进入
+3.VLAN视图、以太网端口视图等 [Sysname-Ethernet1/0/1]
+如果当前视图是用户视图，则退出系统
+
+区别：
+interface Ethernet0/0/0 指的是以太网端口0下面的子端口0
+interface GigabitEthernet1/0/0 指千兆以太网接口 1/0/0表示机器号/槽位号/子接口号
+（ethernet是以太网端口，一般是100M的口，gig是千兆口。0/0/1就是第一个，0/0/3当然就是第三个了。）
+g1/0/3 表示的就是 第1板卡的0槽位3端口
+第一位.1表示第一个板卡槽位,一般1U设备都是1.如果是模块化设备就是机框上的板卡槽位数
+第二位.0表示在这个板卡上的0槽位
+第三位.3表示这个槽位上的端口
+
+#AUX和VTY（Virtual type terminal）的区别
+AUX端口为异步端口，主要用于远程配置，也可用于拔号连接，还可通过收发器与MODEM进行连接。支持硬件流控制（Hardware Flow Control）。AUX端口与Console端口通常被放置在一起，因为它们各自所适用的配置环境不一样。
+VTY 的意思是虚拟终端连接。也就是远程用户登录后会占用VTY的一个进程。而登录信息的验证方式也是配置在vty中。vty 0 4 后边的04 代表0-4个用户也就5个用户。
+aux是一个专用的物理接口，本身也是一个异步串口，可以用来连接modem来进入远程拨入连接，走电话网络的那种。
+vty视图是正常的ip远程登录视图，只支持ip协议的登录。telnet ssh 等
+
+++案例++++++++++
+system view进入系统视图
+user-interface vty 0 进入vty0用户界面视图
+authentication-mode password设置vty0口登录交换机的telnet用户进行password认证
+set authentication password { simple明文| cipher密文 } password
+set authentication password simple 123456 这里是设置用户认证口令为明文方式，口令为123456
+user privilege level 2 用户界面登录后访问的命令级别为2级
+protocol inbound telnet(或all/ssh)设置vty0用户界面支持telnet协议
+screen length 30设置vty0用户终端屏幕只显示30行命令
+history command max size 20 设置vty0用户历史命令缓冲区可存放20条命令
+idle timeout 6设置vty0用户界面空闲超时时间为6分钟
+
+super authentication-mode命令用来设置切换低级别用户到高级别用户的认证方式。undo super authentication-mode命令用来恢复缺省情况。
+
+
++++++++
+super authentication-mode命令用来设置切换低级别用户到高级别用户的认证方式
+
+
++++++++++
+##speed speed-value
+undo speed
+AUX用户界面视图
+【参数】
+speed-value：传输速率，单位为bit/s，可以取值为：300、600、1200、2400、4800、9600、19200、38400、57600和115200。
+speed命令用来配置用户界面的传输速率。undo speed命令用来恢复用户界面的传输速率为缺省值。
+缺省情况下，传输速率为9600bit/s。note3
+# 配置AUX 0用户界面的传输速率为115200bit/s。
+<Sysname> system-view
+System View: return to User View with Ctrl+Z.
+[Sysname] user-interface aux 0
+[Sysname-ui-aux0] speed 115200
+++++++++++++
+
+telnet source-interface 命令用来为Telnet Client指定源接口(为LoopBack接口或VLAN接口)
+telnet source-ip 命令用来为Telnet Client指定源IP地址
+
+++++++++
+level：从用户界面登录后可以访问的命令级别，取值范围为0～3。
+user privilege level命令用来设置从某用户界面登录后可以访问的命令级别。undo user privilege level命令用来恢复缺省情况。
+缺省情况下，从AUX用户界面登录后可以访问的命令级别为3级，从VTY用户界面登录后可以访问的命令级别为0级。
+命令级别共分为访问、监控、系统、管理4个级别，分别对应标识0、1、2、3，简介如下：
+访问级（0级）：用于网络诊断等功能的命令。包括ping、tracert、telnet等命令，执行该级别命令的结果不能被保存到配置文件中。
+监控级（1级）：用于系统维护、业务故障诊断等功能的命令。包括debugging、terminal等命令，执行该级别命令的结果不能被保存到配置文件中。
+系统级（2级）：用于业务配置的命令。包括路由等网络层次的命令，用于向用户提供网络服务。
+管理级（3级）：关系到系统的基本运行、系统支撑模块功能的命令，这些命令对业务提供支撑作用。包括文件系统、FTP、TFTP、XModem下载、用户管理命令、级别设置命令等。
+<Sysname> system-view
+System View: return to User View with Ctrl+Z.
+[Sysname] user-interface vty 0
+[Sysname-ui-vty0] user privilege level 1
+++++++++++
+用户视图进入系统视图system-view
+sysname routerA 配置设备名
+save 保存配置
+reboot 重启
+（dis cu或）display  current-configuration 查看当前设备配置信息
+display  saved-configuration 查看Flash中的配置（相当于CISCO start-config）
+reset?saved-configuration 删除FLASH?中的配置信息(重置设备配置)
+
+Trunk类型的端口可允许多个VLAN，access只允许一个VLAN
+配置VLAN接口1的主IP地址和从IP地址(在vlan1里划分两个网段，交换机默认)。
+system-view
+进入vlan 1中去 interface vlan-interface 1   （int vlan 1）
+ip address 172.16.1.1 255.255.255.0
+ip address 172.16.2.1 255.255.255.0 sub 配置子网端
+dis this 查看当前接口配置
+(undo ip add 192.168.1.1 24 删除vlan端口的ip)
+
+创建vlan10vlan 10
+删除vlan10undo vlan 10 
+显示vlan信息dis vlan (display vlan)
+port link-type trunk ?设置以太网端口的链路类型为TRUNK
+
+ip route 192.168.3.0 255.255.255.0 s 1/0 静态路由
+undo ip route 192.168.3.0 255.255.255.0 s 1/0 删除静态路由
+
+ip route 0.0.0.0 默认路由
+
+#Trunk 链路与 Access 链路的区别是什么？
+Trunk 链路同一时刻可以支持多个 VLAN 的数据转发，数据携带 VLAN 标签（native vlan 除外：VLAN1）；
+Access 链路同一时刻只能传输一个 VLAN 的数据，发送和接收的数据，都没有标签；
+
+++1025日在vlan127添加端口+++++++++++
+system-view
+查看vlan 127的端口 dis cu 
+进入20端口  interface gigabitethernet 1/0/20
+把20端口划分给vlan 127里面 port access vlan 127
+退出q 
+dis cu查看是否划分成功
+
+++++
+(普通以太网的数据帧的最大传输单元（Maximum Transmission Unit，MTU）为1500字节。虚拟机发送一个1500字节的数据包到虚拟交换机，经过vxlan封装时，会增加50字节的头部。这样超过1500字节的数据包，在从aSV主机发送到物理网络中时会被分片，会增加数据包的数量，同时会增大网络设备和aSV主机的数据处理压力。)
+(会将aSV主机网口的MTU设置为1600字节，这样vxlan封装的数据发到物理网络时，不会进行分片，能显著提升虚拟网络转发性能。此时必须在连接aSV的物理交换机上启用巨帧（Jumbo Frame）支持)
+启用巨帧支持的方法()
+system-view 
+interface GigabitEthernet 1/0/1 
+jumboframe enable
+
